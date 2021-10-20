@@ -56,7 +56,7 @@ sudo apt install python-catkin-tools
 sudo apt-get install ros-melodic-tf-*
 ```
 ```
-sudo apt-get install ros-melodic-pcl-msgs ros-kinetic-mav-msgs ros-kinetic-mavros ros-kinetic-octomap-* ros-kinetic-geographic-msgs libgeographic-dev
+sudo apt-get install ros-melodic-pcl-msgs ros-melodic-mav-msgs ros-melodic-mavros ros-melodic-octomap-* ros-melodic-geographic-msgs libgeographic-dev
 ```
 
 ### Creating Catkin Workspace
