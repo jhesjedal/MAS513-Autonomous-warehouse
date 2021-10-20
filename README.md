@@ -98,6 +98,14 @@ rosversion -d
 gazebo -v
 ```
 
+# Omron
 For Omron repository and use of MoveIt see ROS-driver-techman-robot Repository:
 https://github.com/viirya/ros-driver-techman-robot
+
+# Launching Rviz Demo with the tm1100 config
+	roslaunch tm1100_moveit_config demo.launch
+
+# Launching Gazebo
+	roslaunch tm1100_moveit_config gazebo.launch
+
 
