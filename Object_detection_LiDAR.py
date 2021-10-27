@@ -14,27 +14,27 @@ import pyrealsense2 as rs
 #from Shapedetector import Shapedetector
 import numpy as np
 import cv2
-import open3d as o3d
+#import open3d as o3d
 #import matplotlib.pyplot as plt
 
 import os
 import six.moves.urllib as urllib
-import sys
+#import sys
 import tarfile
 import tensorflow as tf
-import zipfile
+#import zipfile
 
-from collections import defaultdict
-from io import StringIO
-from matplotlib import pyplot as plt
-from PIL import Image
+# from collections import defaultdict
+# from io import StringIO
+# from matplotlib import pyplot as plt
+# from PIL import Image
 
 
 from object_detection.utils import label_map_util
 
 from object_detection.utils import visualization_utils as vis_util
 # For measuring the inference time.
-import time
+#import time
 
 # # Load Yolo
 # net = cv2.dnn.readNet("yolov3.weights", "yolov3.cfg")
@@ -47,7 +47,11 @@ import time
 
 os.chdir("C:/Users/jhesj/models/research/object_detection")
 
+#Different models were tested
 MODEL_NAME = 'ssd_mobilenet_v1_coco_11_06_2017'
+#MODEL_NAME = 'ssd_mobilenet_v1_fpn_shared_box_predictor_640x640_coco14_sync_2018_07_03'
+#MODEL_NAME = 'faster_rcnn_inception_v2_coco_2018_01_28'
+
 MODEL_FILE = MODEL_NAME + '.tar.gz'
 DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 
@@ -55,7 +59,7 @@ DOWNLOAD_BASE = 'http://download.tensorflow.org/models/object_detection/'
 PATH_TO_CKPT = MODEL_NAME + '/frozen_inference_graph.pb'
 
 # List of the strings that is used to add correct label for each box.
-PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map2.pbtxt')
+PATH_TO_LABELS = os.path.join('data', 'mscoco_label_map.pbtxt')
 
 NUM_CLASSES = 90
 
@@ -81,10 +85,10 @@ label_map = label_map_util.load_labelmap(PATH_TO_LABELS)
 categories = label_map_util.convert_label_map_to_categories(label_map, max_num_classes=NUM_CLASSES, use_display_name=True)
 category_index = label_map_util.create_category_index(categories)
 
-def load_image_into_numpy_array(image):
-    (im_width, im_height) = image.size
-    return np.array(image.getdata()).reshape(
-        (im_height, im_width, 3)).astype(np.uint8)
+# def load_image_into_numpy_array(image):
+#     (im_width, im_height) = image.size
+#     return np.array(image.getdata()).reshape(
+#         (im_height, im_width, 3)).astype(np.uint8)
 
 PATH_TO_TEST_IMAGES_DIR = 'test_images'
 TEST_IMAGE_PATHS = [ os.path.join(PATH_TO_TEST_IMAGES_DIR, 'image{}.jpg'.format(i)) for i in range(1, 3) ]  # change this value if you want to add more pictures to test
@@ -166,12 +170,14 @@ try:
                 
                 
                 
-                Width = depth_frame.get_width()         #Henter antall piksler i bredden
-                Height = depth_frame.get_height()       #Henter antall piksler i høyden
+                Width = color_frame.get_width()         #Gets width in terms of pixels for color image
+                Height = color_frame.get_height()       #Gets height in terms of pixels for color image
                 
-                depth = depth_frame.get_distance(int(Width/2),int(Height/2))    #Les av distance
-                Distance.append(depth)          #Legger til distansemåling i liste
-                #print(depth)
+                Width_depth = depth_frame.get_width()         #Gets width in terms of pixels for depth image
+                Height_depth = depth_frame.get_height()       #Gets height in terms of pixels for depth image
+                # depth = depth_frame.get_distance(int(Width/2),int(Height/2))    #Les av distance
+                # Distance.append(depth)          #Legger til distansemåling i liste
+                
                 
                 
                 '''--------------YOLO object detection-------------------'''
@@ -260,37 +266,43 @@ try:
                 objects = []
                 for index, value in enumerate(classes[0]):
                     object_dict = {}
-                    if scores[0, index] > 0.5:
+                    if scores[0, index] > 0.8:
                         object_dict[(category_index.get(value)).get('name').encode('utf8')] = \
                             scores[0, index]
                         
                     objects.append(object_dict)
                     
-                objects[:] = [a for a in objects if a]
+                objects[:] = [a for a in objects if a] #removes "empty" objects in array
                 #print (objects)
                 for i, box in enumerate(boxes[0]):
                     
-                    if scores[0, i] >= 0.5:
+                    if scores[0, i] > 0.8:
                         
                         ymin, xmin, ymax, xmax = box    
-                        x = xmax*Width
-                        y = (ymin + ((ymax-ymin)/2))*Height
+                        x = (xmin + (xmax-xmin)/2)*Width
+                        y = (ymin + (ymax-ymin)/2)*Height
+                        #Makes sure x and y is within camera parameters
                         if x >= int(Width):
-                            x = Width-1     #-1 to avoid error
+                            x = Width
                             
                         if y >= int(Height):
                             y = Height
                             
-                        #print(int(x))
+                        ratio_height = Height_depth/Height
+                        ratio_width = Width_depth/Width
+                        
+                        x_depth = x * ratio_width
+                        y_depth = y * ratio_height
                         
                         depth_intr = depth_frame.profile.as_video_stream_profile().intrinsics
                         color_intr = color_frame.profile.as_video_stream_profile().intrinsics
                         
-                        Obj_dist = depth_frame.get_distance(int(x), int(y))
+                        Obj_dist = depth_frame.get_distance(int(x_depth), int(y_depth))
+                        print(Obj_dist)
+                        Coordinate_point = rs.rs2_deproject_pixel_to_point(color_intr,(int(x_depth),int(y_depth)) ,Obj_dist)
                         
-                        depth_point = rs.rs2_deproject_pixel_to_point(color_intr,(int(x),int(y)) ,Obj_dist)
+                        print(Coordinate_point)
                         
-                        print(depth_point)
                         if Obj_dist != 0.0:
                             #cv2.drawMarker(color_image, (int(xmax*Width),int(ymax*Height)), [0,255,0])
                             #cv2.drawMarker(color_image, (int(xmin*Width),int(ymin*Height)), [255,0,0])
@@ -302,8 +314,8 @@ try:
                         pass
                 
                 
-                # for c in objects:
-                #     print(str(c) + ": Distanse = " + str(Dist))
+                # for i, c in enumerate(objects):
+                #     print(str(c) + ": Distanse = " + str(Dist[i]))
                 '''-------------------------------------------------------------'''
 
                 
