@@ -11,7 +11,6 @@ import pyrealsense2 as rs
 ##      Open CV and Numpy integration        ##
 ###############################################
 
-#from Shapedetector import Shapedetector
 import numpy as np
 import cv2
 #import open3d as o3d
@@ -29,10 +28,32 @@ import tensorflow as tf
 # from matplotlib import pyplot as plt
 # from PIL import Image
 
-
 from object_detection.utils import label_map_util
 
 from object_detection.utils import visualization_utils as vis_util
+
+import rospy
+from std_msgs.msg import float64MultiArray
+from std_msgs.msg import Bool
+
+def Publish(data):
+    pub = rospy.Publisher(1.000, float64MultiArray, queue_size = 10)
+    rospy.init_mode('Publish_node', anonymous=True)
+    rate = rospy.Rate(10)
+    while not rospy.is_shutdown():
+        PublishFloat = data
+        rospy.loginfo(PublishFloat)
+        pub.publish(PublishFloat)
+        rate.sleep()
+
+def callback(data):
+    rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
+
+def Subscribe():
+    rospy.init_mode(False, anonymous = True)
+    rospy.Subscriber('Noe', Bool, callback)
+    rospy.spin()
+    
 # For measuring the inference time.
 #import time
 
