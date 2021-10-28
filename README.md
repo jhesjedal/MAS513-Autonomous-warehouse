@@ -1,5 +1,8 @@
 # Computer vision based pick and place with maniputator
 
+This repository is created for a project where a manipulator (Omron TM14/tm1100) does pick and place from computer vision data.
+
+The repository is based on https://github.com/viirya/ros-driver-techman-robot which do not have a MoveIt configuration for this projects manipulator. A configuration for the tm1100 was made. For further use of already excisting content, see link above.
 
 # Installing_ROS
 INSTALLING & GETTING STARTED WITH ROS | How to install ROS & How to setup Catkin Workspace on Ubuntu
