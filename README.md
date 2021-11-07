@@ -4,6 +4,8 @@ This repository is created for a project where a manipulator (Omron TM14/tm1100)
 
 The repository is based on https://github.com/viirya/ros-driver-techman-robot which do not have a MoveIt configuration for this projects manipulator. A configuration for the tm1100 was made. For further use of already excisting content, see link above.
 
+ROS version Melodic is implemented in this repository. If using a different ROS version, exchange "melodic" with the used ROS version.
+
 # Installing_ROS
 INSTALLING & GETTING STARTED WITH ROS | How to install ROS & How to setup Catkin Workspace on Ubuntu
 
@@ -104,6 +106,10 @@ gazebo -v
 # Omron
 For Omron repository and use of MoveIt see ROS-driver-techman-robot Repository:
 https://github.com/viirya/ros-driver-techman-robot
+
+### Installing nessesary controller for Rviz and gazebo simulation and dependencies.
+	sudo  apt−get  install ros−melodic−joint−trajectory−controller
+	sudo  apt−get  install ros−melodic−joint−trajectory−action
 
 ### Launching Rviz Demo with the tm1100 config
 	roslaunch tm1100_moveit_config demo.launch
