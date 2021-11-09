@@ -24,7 +24,7 @@ sudo apt-key adv --keyserver 'hkp://keyserver.ubuntu.com:80' --recv-key C1CF6E31
 
 ### Update package list
 ```
-sudo apt-get update
+sudo apt-get update && upgrade
 ```
 
 ### Installing ROS Melodic Full Desktop Version
@@ -112,9 +112,14 @@ https://github.com/viirya/ros-driver-techman-robot
 	sudo  apt−get  install ros−melodic−joint−trajectory−action
 
 ### Launching Rviz Demo with the tm1100 config
-	roslaunch tm1100_moveit_config demo.launch
+	roslaunch tm_gazebo tm1100_gazebo_moveit.launch
 
 ### Launching Gazebo
-	roslaunch tm1100_moveit_config gazebo.launch
-However this leads to some errors from the moveit configuration files.
+	roslaunch tm_gazebo tm1100.launch
 
+### Executing script for motion
+	Before executing th python scripts, it has to be executable. Making a python script executable is done with the following command:
+	chmod +x importcsv.py
+	
+	Then the script can be executed:
+	rosrun scripts importcsv.py
