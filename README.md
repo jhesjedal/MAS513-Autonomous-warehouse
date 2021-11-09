@@ -4,7 +4,7 @@ This repository is created for a project where a manipulator (Omron TM14/tm1100)
 
 The repository is based on https://github.com/viirya/ros-driver-techman-robot which do not have a MoveIt configuration for this projects manipulator. A configuration for the tm1100 was made. For further use of already excisting content, see link above.
 
-Object detection for this project was not used directly with ROS, therefore a simplified solution was utilized. The objects coordinate was printed to a .csv-file, which was imported in importcsv.py under "Scripts". importcsv.py also includes motion commands for the simulation. 
+Object detection for this project (vision.py) was not used directly with ROS, therefore a simplified solution was utilized. The objects coordinate was printed to a .csv-file, which was imported in importcsv.py under "Scripts". importcsv.py also includes motion commands for the simulation. 
 
 ROS version Melodic is implemented in this repository. If using a different ROS version, exchange "melodic" with the used ROS version.
 
